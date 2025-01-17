@@ -24,15 +24,17 @@ jobs:
 
     - name: Install Android Dependencies
       run: |
+        sudo dpkg --add-architecture i386
         sudo apt-get update
         sudo apt-get install -y \
-            libvirt-daemon-system \
-            libvirt-clients \
-            qemu-kvm \
-            libgl1-mesa-dri \
-            libgl1-mesa-dev \
-            lib32z1 \
-            libstdc++6:i386
+          libvirt-daemon-system \
+          libvirt-clients \
+          qemu-kvm \
+          libgl1-mesa-dri \
+          libgl1-mesa-dev \
+          lib32z1 \
+          libc6:i386 \
+          libstdc++6:i386
 
     - name: Set up Android SDK
       uses: android-actions/setup-android@v2
