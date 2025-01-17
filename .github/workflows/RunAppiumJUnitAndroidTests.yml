@@ -44,7 +44,7 @@ jobs:
     # 6. Criar e iniciar o emulador Android
     - name: Create and start emulator
       run: |
-        avdmanager create avd -n test -k "system-images;android-33;google_apis;x86_64" --device "pixel"
+        avdmanager create avd -n test -k "system-images;android-35;google_apis;x86_64" --device "pixel"
         emulator -avd test -no-snapshot -no-audio -no-window &
         adb wait-for-device
         adb shell input keyevent 82 # Unlock screen
