@@ -44,23 +44,20 @@ jobs:
         target: android-35
         ndk: false
 
-    - name: Install System Image
-      run: sdkmanager "system-images;android-35;google_apis;x86_64"
-
-    - name: Create AVD
+    - name: Install Emulator and System Image
       run: |
+        sdkmanager "emulator" "system-images;android-35;google_apis;x86_64"
         echo "no" | avdmanager create avd -n test -k "system-images;android-35;google_apis;x86_64" --device "pixel"
 
     - name: Start Emulator
+      env:
+        ANDROID_HOME: /usr/local/lib/android/sdk
+        PATH: $ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH
       run: |
         nohup emulator -avd test -no-snapshot -no-window -gpu swiftshader_indirect -no-audio -verbose &
         sleep 60
         adb wait-for-device
         adb shell getprop sys.boot_completed | grep -m 1 "1"
-
-    - name: Capture Emulator Logs (Optional Debug Step)
-      if: failure()
-      run: adb logcat -d > emulator-log.txt
 
     - name: Verify Emulator is Running
       run: adb shell input keyevent 82
