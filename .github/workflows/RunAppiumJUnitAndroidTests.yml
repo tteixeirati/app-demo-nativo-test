@@ -17,7 +17,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
  
-    # 2. Configurar o JDK (Java 21, conforme mencionado anteriormente)
+    # 2. Configurar o JDK (Java 21)
     - name: Set up JDK 21
       uses: actions/setup-java@v3
       with:
@@ -28,14 +28,20 @@ jobs:
     - name: Install dependencies
       run: mvn install -DskipTests
  
-    # 4. Criar e iniciar o emulador Android
+    # 4. Configurar Android SDK
     - name: Set up Android SDK
       uses: android-actions/setup-android@v2
       with:
-        api-level: 33
+        api-level: 35
         target: google_apis
         channel: stable
  
+    # 5. Instalar o pacote de imagem do sistema Android
+    - name: Install Android system image
+      run: |
+        yes | sdkmanager --install "system-images;android-35;google_apis;x86_64"
+ 
+    # 6. Criar e iniciar o emulador Android
     - name: Create and start emulator
       run: |
         avdmanager create avd -n test -k "system-images;android-33;google_apis;x86_64" --device "pixel"
@@ -43,8 +49,6 @@ jobs:
         adb wait-for-device
         adb shell input keyevent 82 # Unlock screen
  
-    # 5. Executar os testes
+    # 7. Executar os testes
     - name: Run Tests
       run: mvn test
-
- 
