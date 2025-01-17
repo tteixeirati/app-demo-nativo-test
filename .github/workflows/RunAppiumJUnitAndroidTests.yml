@@ -22,42 +22,21 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Install Android Dependencies
-      run: |
-        sudo dpkg --add-architecture i386
-        sudo apt-get update
-        sudo apt-get install -y \
-          libvirt-daemon-system \
-          libvirt-clients \
-          qemu-kvm \
-          libgl1-mesa-dri \
-          libgl1-mesa-dev \
-          lib32z1 \
-          libc6:i386 \
-          libstdc++6:i386
-
     - name: Set up Android SDK
       uses: android-actions/setup-android@v2
       with:
         api-level: 35
         build-tools: 35.0.0
         target: android-35
-        ndk: false
-
-    - name: Install Emulator and System Image
-      run: |
-        sdkmanager "emulator" "system-images;android-35;google_apis;x86_64"
-        echo "no" | avdmanager create avd -n test -k "system-images;android-35;google_apis;x86_64" --device "pixel"
 
     - name: Start Emulator
-      env:
-        ANDROID_HOME: /usr/local/lib/android/sdk
-        PATH: $ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH
-      run: |
-        nohup emulator -avd test -no-snapshot -no-window -gpu swiftshader_indirect -no-audio -verbose &
-        sleep 60
-        adb wait-for-device
-        adb shell getprop sys.boot_completed | grep -m 1 "1"
+      uses: ReactiveCircus/android-emulator-runner@v2
+      with:
+        api-level: 35
+        target: google_apis
+        arch: x86_64
+        profile: pixel
+        emulator-options: "-no-window -no-audio"
 
     - name: Verify Emulator is Running
       run: adb shell input keyevent 82
