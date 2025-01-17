@@ -40,7 +40,26 @@ jobs:
     - name: Start emulator
       run: |
         nohup emulator -avd test -no-window -no-audio -gpu off &
+        sleep 5 # Give the emulator a moment to start
         adb wait-for-device
+
+    - name: Wait for emulator to boot
+      run: |
+        boot_completed="0"
+        timeout=300 # Maximum wait time (5 minutes)
+        elapsed=0
+        while [ "$boot_completed" != "1" ] && [ $elapsed -lt $timeout ]; do
+          boot_completed=$(adb shell getprop sys.boot_completed | tr -d '\r')
+          if [ "$boot_completed" != "1" ]; then
+            sleep 5
+            elapsed=$((elapsed + 5))
+          fi
+        done
+        if [ "$boot_completed" != "1" ]; then
+          echo "Emulator failed to boot within $timeout seconds"
+          exit 1
+        fi
+        echo "Emulator is ready."
 
     - name: Verify emulator is running
       run: adb shell input keyevent 82
