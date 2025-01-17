@@ -27,7 +27,7 @@ jobs:
       with:
         api-level: 35
         build-tools: 35.0.0
-        target: android-35
+        target: google_apis
 
     - name: Start Emulator
       uses: ReactiveCircus/android-emulator-runner@v2
@@ -36,10 +36,18 @@ jobs:
         target: google_apis
         arch: x86_64
         profile: pixel
-        emulator-options: "-no-window -no-audio"
+        emulator-options: "-no-window -no-audio -gpu swiftshader_indirect"
+        disable-linux-hw-accel: true
+        avd-name: test
+        force-avd-creation: true
+        emulator-boot-timeout: 600
+        disable-animations: true
+
+    - name: Wait for Emulator to Boot
+      run: adb wait-for-device
 
     - name: Verify Emulator is Running
-      run: adb shell input keyevent 82
+      run: adb shell getprop sys.boot_completed | grep -m 1 "1"
 
     - name: Run Tests with Gradle
       run: ./gradlew clean test
