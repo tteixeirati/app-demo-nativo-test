@@ -1,5 +1,5 @@
-name: Run Android Emulator
-
+name: Android Mobile Automation
+ 
 on:
   push:
     branches:
@@ -7,58 +7,36 @@ on:
   pull_request:
     branches:
       - main
-
+ 
 jobs:
-  test:
+  android-tests:
     runs-on: ubuntu-latest
-
+ 
     steps:
+    # 1. Checkout o código do repositório
     - name: Checkout code
       uses: actions/checkout@v3
-
-    - name: Set up JDK 17
+ 
+    # 2. Configurar o ambiente Java e Android SDK
+    - name: Set up Java
       uses: actions/setup-java@v3
       with:
-        distribution: 'temurin'
-        java-version: '17'
-
-    - name: Install Emulator Dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libgl1-mesa-dev libvirt-dev qemu-kvm
-
+        java-version: 11
+        distribution: 'zulu'
+ 
     - name: Set up Android SDK
       uses: android-actions/setup-android@v2
       with:
-        api-level: 33
-        build-tools: 33.0.3
+        api-level: 35
         target: google_apis
-
-    - name: Start Emulator
-      uses: ReactiveCircus/android-emulator-runner@v2
-      with:
-        api-level: 33
-        target: google_apis
-        arch: x86_64
-        profile: pixel
-        emulator-options: -no-window -no-audio -gpu swiftshader_indirect -verbose
-        disable-linux-hw-accel: true
-        avd-name: test
-        force-avd-creation: true
-        emulator-boot-timeout: 900
-        disable-animations: true
-        ram-size: 2048M
-        disk-size: 2G
-
-    - name: Wait for Emulator to Boot
-      run: adb wait-for-device
-
-    - name: Verify Emulator is Running
-      run: adb shell getprop sys.boot_completed | grep -m 1 "1"
-
-    - name: Run Tests with Gradle
-      run: ./gradlew clean test
-
-    - name: Stop Emulator
-      if: always()
-      run: adb -s emulator-5554 emu kill
+        channel: stable
+ 
+    # 3. Baixar e configurar dependências do projeto
+    - name: Install dependencies
+      run: |
+        ./gradlew dependencies
+ 
+    # 4. Criar e iniciar o emulador Android
+    - name: Create and start emulator
+      run: |
+        avdmanager create avd -n test -k "system-images;android-33;google_apis
