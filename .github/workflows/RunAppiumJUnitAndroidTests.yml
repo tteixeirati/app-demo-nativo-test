@@ -35,7 +35,7 @@ jobs:
     # 4. Instalar dependências do projeto (Gradle)
     - name: Install dependencies
       run: |
-        Maven-name:Installdependenciesrun:mvninstall-DskipTests
+        run: mvn install -DskipTests
  
     # 5. Criar e iniciar o emulador Android
     - name: Create and start emulator
