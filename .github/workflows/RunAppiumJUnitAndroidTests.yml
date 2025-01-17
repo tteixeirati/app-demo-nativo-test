@@ -35,15 +35,15 @@ jobs:
     # 4. Instalar dependências do projeto (Gradle)
     - name: Install dependencies
       run: |
-        ./gradlew dependencies
+        Maven-name:Installdependenciesrun:mvninstall-DskipTests
  
     # 5. Criar e iniciar o emulador Android
     - name: Create and start emulator
-      run: |
-        avdmanager create avd -n test -k "system-images;android-35;google_apis;x86_64" --device "pixel"
-        emulator -avd test -no-snapshot -no-audio -no-window &
-        adb wait-for-device
-        adb shell input keyevent 82 # Unlock screen
+      run: | 
+           avdmanager create avd -n test -k "system-images;android-33;google_apis;x86_64" --device "pixel"         
+           emulator -avd test -no-snapshot -no-audio -no-window &         
+           adb wait-for-device         
+           adb shell input keyevent 82 # Unlock screen
  
     # 6. Verificar se o emulador está funcionando
     - name: Verify Emulator is Running
@@ -51,9 +51,8 @@ jobs:
  
     # 7. Executar os testes de automação
     - name: Run Tests
-      run: |
-        ./gradlew clean test
- 
+      run: mvn install
+            
     # 8. Fazer upload dos relatórios de teste (opcional)
     - name: Upload Test Results
       if: always()
