@@ -1,0 +1,59 @@
+name: Run Appium JUnit Android Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v2
+      with:
+        api-level: 30
+        build-tools: 30.0.3
+        target: android-30
+        ndk: false
+
+    - name: Install dependencies
+      run: |
+        sdkmanager "platform-tools" "emulator"
+        sdkmanager "system-images;android-30;google_apis;x86_64"
+        echo "y" | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
+
+    - name: Start emulator
+      run: |
+        nohup emulator -avd test -no-window -no-audio -gpu off &
+        adb wait-for-device
+
+    - name: Verify emulator is running
+      run: adb shell input keyevent 82
+
+    - name: Start Appium server
+      run: |
+        npm install -g appium
+        nohup appium &
+
+    - name: Run tests
+      run: |
+        ./gradlew test
+
+    - name: Stop emulator
+      if: always()
+      run: |
+        adb -s emulator-5554 emu kill
