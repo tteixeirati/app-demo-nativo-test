@@ -1,4 +1,4 @@
-name: Run Android Emulator and Tests
+name: Run Android Emulator
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Install Android Emulator Dependencies
+    - name: Install Android Dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y libvirt-bin qemu-kvm libgl1-mesa-dev libgl1-mesa-glx lib32z1 lib32stdc++6
@@ -38,45 +38,26 @@ jobs:
     - name: Install System Image
       run: sdkmanager "system-images;android-35;google_apis;x86_64"
 
-    - name: Create Android Emulator
+    - name: Create AVD
       run: |
         echo "no" | avdmanager create avd -n test -k "system-images;android-35;google_apis;x86_64" --device "pixel"
 
     - name: Start Emulator
       run: |
-        nohup emulator -avd test -no-window -no-audio -gpu swiftshader_indirect -verbose -show-kernel &
+        nohup emulator -avd test -no-snapshot -no-window -gpu swiftshader_indirect -no-audio -verbose &
+        sleep 60
         adb wait-for-device
-        adb shell getprop sys.boot_completed
+        adb shell getprop sys.boot_completed | grep -m 1 "1"
 
-    - name: Wait for Emulator to Boot
-      run: |
-        boot_completed="0"
-        timeout=300 # Maximum wait time (5 minutes)
-        elapsed=0
-        while [ "$boot_completed" != "1" ] && [ $elapsed -lt $timeout ]; do
-          boot_completed=$(adb shell getprop sys.boot_completed | tr -d '\r')
-          if [ "$boot_completed" != "1" ]; then
-            echo "Waiting for emulator to boot..."
-            sleep 5
-            elapsed=$((elapsed + 5))
-          fi
-        done
-        if [ "$boot_completed" != "1" ]; then
-          echo "Emulator failed to boot within $timeout seconds"
-          exit 1
-        fi
-        echo "Emulator is ready."
+    - name: Capture Emulator Logs (Optional Debug Step)
+      if: failure()
+      run: adb logcat -d > emulator-log.txt
 
     - name: Verify Emulator is Running
       run: adb shell input keyevent 82
 
-    - name: Start Appium Server
-      run: |
-        npm install -g appium
-        nohup appium &
-
-    - name: Run Tests with Maven
-      run: mvn clean test
+    - name: Run Tests with Gradle
+      run: ./gradlew clean test
 
     - name: Stop Emulator
       if: always()
