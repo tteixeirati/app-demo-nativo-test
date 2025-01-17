@@ -22,26 +22,33 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
+    - name: Install Emulator Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgl1-mesa-dev libvirt-dev qemu-kvm
+
     - name: Set up Android SDK
       uses: android-actions/setup-android@v2
       with:
-        api-level: 35
-        build-tools: 35.0.0
+        api-level: 33
+        build-tools: 33.0.3
         target: google_apis
 
     - name: Start Emulator
       uses: ReactiveCircus/android-emulator-runner@v2
       with:
-        api-level: 35
+        api-level: 33
         target: google_apis
         arch: x86_64
         profile: pixel
-        emulator-options: "-no-window -no-audio -gpu swiftshader_indirect"
+        emulator-options: -no-window -no-audio -gpu swiftshader_indirect -verbose
         disable-linux-hw-accel: true
         avd-name: test
         force-avd-creation: true
-        emulator-boot-timeout: 600
+        emulator-boot-timeout: 900
         disable-animations: true
+        ram-size: 2048M
+        disk-size: 2G
 
     - name: Wait for Emulator to Boot
       run: adb wait-for-device
