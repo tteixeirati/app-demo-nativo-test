@@ -23,6 +23,12 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '21'
+        
+    - name: Set up environment variables
+       run:|
+         echo "BROWSERSTACK_USERNAME=${{ secrets.BROWSERSTACK_USERNAME }}" >> $GITHUB_ENV
+         echo "BROWSERSTACK_ACCESS_KEY=${{ secrets.BROWSERSTACK_ACCESS_KEY }}" >> $GITHUB_ENV  
+
  
     # 3. Instalar dependências do Maven
     - name: Install dependencies
