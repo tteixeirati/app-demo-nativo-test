@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 
 public class AppTest {
 
@@ -29,7 +30,9 @@ public class AppTest {
         }
     }
 
+
     @Test
+    @DisplayName("Test Login")
     public void testLogin() {
         Login login = new Login(driver);
         LoginPage loginPage = new LoginPage(driver);
