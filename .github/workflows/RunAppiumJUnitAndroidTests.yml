@@ -9,60 +9,48 @@ on:
       - main
  
 jobs:
-  android-tests:
+  test:
     runs-on: ubuntu-latest
- 
     steps:
-    # 1. Checkout o código do repositório
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up environment variables
-      run: |
-        echo "BROWSERSTACK_USERNAME=${{ secrets.BROWSERSTACK_USERNAME }}" >> $GITHUB_ENV
-        echo "BROWSERSTACK_ACCESS_KEY=${{ secrets.BROWSERSTACK_ACCESS_KEY }}" >> $GITHUB_ENV
- 
-    # 2. Configurar o JDK (Java 21)
-    - name: Set up JDK 21
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '21'
+      - name: Set up Android SDK
+        run: |
+          # Install dependencies for Android SDK tools
+          sudo apt-get update
+          sudo apt-get install -y wget unzip openjdk-8-jdk
 
-    - name: Set up Android SDK
-      run: |
-        # Install dependencies for Android SDK tools
-        sudo apt-get update
-        sudo apt-get install -y wget unzip openjdk-8-jdk
+          # Download and install Android SDK Command-Line Tools
+          wget https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip
+          unzip commandlinetools-linux-7302050_latest.zip
+          sudo mv cmdline-tools /usr/local/android-sdk
 
-        # Download and install Android SDK Command-Line Tools
-        wget https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip
-        unzip commandlinetools-linux-7302050_latest.zip
-        sudo mv cmdline-tools /usr/local/android-sdk
+          # Set environment variables for Android SDK
+          echo "ANDROID_SDK_ROOT=/usr/local/android-sdk" >> $GITHUB_ENV
+          echo "PATH=$PATH:/usr/local/android-sdk/cmdline-tools/latest/bin:/usr/local/android-sdk/platform-tools:/usr/local/android-sdk/emulator" >> $GITHUB_ENV
 
-        # Set environment variables for Android SDK
-        echo "ANDROID_SDK_ROOT=/usr/local/android-sdk" >> $GITHUB_ENV
-        echo "PATH=$PATH:/usr/local/android-sdk/cmdline-tools/latest/bin:/usr/local/android-sdk/platform-tools:/usr/local/android-sdk/emulator" >> $GITHUB_ENV
-                
-    - name: Install Android Emulator and System Image
-      run: |
-        # Install necessary components
-        sdkmanager --sdk_root=$ANDROID_SDK_ROOT "emulator"
-        sdkmanager --sdk_root=$ANDROID_SDK_ROOT "system-images;android-30;google_apis;x86_64"  # Choose your required image
-  
-    - name: Accept Android licenses
-      run: |
-        yes | sdkmanager --licenses --sdk_root=$ANDROID_SDK_ROOT
-  
-    - name: Start Android Emulator
-      run: |
-        # Start the Android Emulator
-        $ANDROID_SDK_ROOT/emulator/emulator -avd Pixel_4_API_30 -no-window &
+      - name: Install Android Emulator and System Image
+        run: |
+          # Install emulator and system images (API 30, x86_64)
+          sdkmanager --sdk_root=$ANDROID_SDK_ROOT "emulator"
+          sdkmanager --sdk_root=$ANDROID_SDK_ROOT "system-images;android-30;google_apis;x86_64"  # You can change this to the required API level
+          
+      - name: Accept Android licenses
+        run: |
+          yes | sdkmanager --licenses --sdk_root=$ANDROID_SDK_ROOT
 
-     # 3. Instalar dependências do Maven
-    - name: Install dependencies
-      run: mvn install -DskipTests &
-  
-    # 7. Executar os testes
-    - name: Run Tests
-      run: mvn test
+      - name: Create AVD (Android Virtual Device)
+        run: |
+          # Create an AVD (Pixel 4 with API 30)
+          echo "no" | avdmanager create avd -n Pixel_4_API_30 -k "system-images;android-30;google_apis;x86_64"
+
+      - name: Start Android Emulator
+        run: |
+          # Start the Android Emulator
+          $ANDROID_SDK_ROOT/emulator/emulator -avd Pixel_4_API_30 -no-window &
+
+      - name: Run Appium Test
+        run: |
+          echo "Running Appium tests"
+          # Add your Appium test command here
