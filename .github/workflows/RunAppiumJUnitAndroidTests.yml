@@ -1,5 +1,5 @@
-name: Android Mobile Automation with Maven
- 
+name: Java Mobile Appium Tests
+
 on:
   push:
     branches:
@@ -7,50 +7,36 @@ on:
   pull_request:
     branches:
       - main
- 
+
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up Android SDK
-        run: |
-          # Install dependencies for Android SDK tools
-          sudo apt-get update
-          sudo apt-get install -y wget unzip openjdk-8-jdk
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17' # Update based on your Java version
 
-          # Download and install Android SDK Command-Line Tools
-          wget https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip
-          unzip commandlinetools-linux-7302050_latest.zip
-          sudo mv cmdline-tools /usr/local/android-sdk
+    - name: Cache Maven dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-m2
 
-          # Set environment variables for Android SDK
-          echo "ANDROID_SDK_ROOT=/usr/local/android-sdk" >> $GITHUB_ENV
-          echo "PATH=$PATH:/usr/local/android-sdk/cmdline-tools/latest/bin:/usr/local/android-sdk/platform-tools:/usr/local/android-sdk/emulator" >> $GITHUB_ENV
+    - name: Install Maven dependencies
+      run: mvn install -DskipTests
 
-      - name: Install Android Emulator and System Image
-        run: |
-          # Install emulator and system images (API 30, x86_64)
-          sdkmanager --sdk_root=$ANDROID_SDK_ROOT "emulator"
-          sdkmanager --sdk_root=$ANDROID_SDK_ROOT "system-images;android-30;google_apis;x86_64"  # You can change this to the required API level
-          
-      - name: Accept Android licenses
-        run: |
-          yes | sdkmanager --licenses --sdk_root=$ANDROID_SDK_ROOT
+    - name: Start Appium server
+      run: |
+        npm install -g appium
+        appium --log-level error &
 
-      - name: Create AVD (Android Virtual Device)
-        run: |
-          # Create an AVD (Pixel 4 with API 30)
-          echo "no" | avdmanager create avd -n Pixel_4_API_30 -k "system-images;android-30;google_apis;x86_64"
-
-      - name: Start Android Emulator
-        run: |
-          # Start the Android Emulator
-          $ANDROID_SDK_ROOT/emulator/emulator -avd Pixel_4_API_30 -no-window &
-
-      - name: Run Appium Test
-        run: |
-          echo "Running Appium tests"
-          # Add your Appium test command here
+    - name: Run Appium tests
+      run: mvn test
