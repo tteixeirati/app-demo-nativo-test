@@ -1,4 +1,4 @@
-name: Java Mobile Appium Tests
+name: Run Appium Tests on BrowserStack
 
 on:
   push:
@@ -20,14 +20,7 @@ jobs:
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
-        java-version: '21'
-
-    - name: Setup Maven
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '21'
-        cache: 'maven'
+        java-version: '17' # Use the correct Java version
 
     - name: Cache Maven dependencies
       uses: actions/cache@v3
@@ -40,10 +33,14 @@ jobs:
     - name: Install Maven dependencies
       run: mvn install -DskipTests
 
-    - name: Start Appium server
-      run: |
-        npm install -g appium
-        appium --log-level error &
+    - name: Set up BrowserStack environment variables
+      env:
+        BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+        BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+        BROWSERSTACK_APP_ID: ${{ secrets.BROWSERSTACK_APP_ID }}
+      run: echo "BrowserStack environment variables set"
 
-    - name: Run Appium tests
-      run: mvn test
+    - name: Run Appium tests on BrowserStack
+      env:
+        BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+        BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK
