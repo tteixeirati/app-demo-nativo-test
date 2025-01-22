@@ -20,10 +20,9 @@ public class Startup {
 
         String currentDir = System.getProperty("user.dir");
         String apkPath = currentDir + "\\android.wdio.native.app.v1.0.8.apk";
-//        URL appiumServerUrl = new URL("http://172.30.208.1:4723/");
-        URL appiumServerUrl = new URL("https://hub-cloud.browserstack.com/wd/hub");
         String userName = System.getenv("BROWSERSTACK_USERNAME");
         String accessKey = System.getenv("BROWSERSTACK_ACCESS_KEY");
+        URL appiumServerUrl = new URL("https://userName:accessKey@hub-cloud.browserstack.com/wd/hub");
 
         UiAutomator2Options options = new UiAutomator2Options();
 //        options.setDeviceName("emulator-5554");
