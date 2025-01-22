@@ -1,4 +1,4 @@
-name: Run Appium Tests on BrowserStack
+name: BrowserStack Appium Tests
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
-        java-version: '17' # Use the correct Java version
+        java-version: '17' # Update this based on your Java version
 
     - name: Cache Maven dependencies
       uses: actions/cache@v3
@@ -33,14 +33,18 @@ jobs:
     - name: Install Maven dependencies
       run: mvn install -DskipTests
 
-    - name: Set up BrowserStack environment variables
+    - name: Set BrowserStack environment variables
       env:
         BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
         BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-        BROWSERSTACK_APP_ID: ${{ secrets.BROWSERSTACK_APP_ID }}
-      run: echo "BrowserStack environment variables set"
+      run: echo "BrowserStack credentials set."
 
     - name: Run Appium tests on BrowserStack
       env:
         BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
-        BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK
+        BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+      run: |
+        mvn test -Dappium.server.url=https://$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY@hub-cloud.browserstack.com/wd/hub \
+                 -Dbrowserstack.device="Google Pixel 7" \
+                 -Dbrowserstack.os_version="13.0" \
+                 -Dbrowserstack.app_url="bs://<app_url>" # Replace <app_url> with the uploaded app URL
