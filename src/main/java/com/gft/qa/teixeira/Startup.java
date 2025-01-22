@@ -36,7 +36,7 @@ public class Startup {
 
 //        options.setCapability("platformName", "Android"); // or "iOS"
         options.setCapability("deviceName", "Samsung Galaxy S22 Ultra"); // Specify device
-        options.setCapability("app", "bs://0b3702a6ab69ccd0f740dd899056284cf3a876f7"); // Specify app ID in BrowserStack
+        options.setCapability("app", "bs://0b3702a6ab69ccd0f740dd899056284cf3a876f7.app"); // Specify app ID in BrowserStack
         options.setCapability("browserstack.user", userName); // Set BrowserStack username
         options.setCapability("browserstack.key", accessKey); // Set BrowserStack access key
 
@@ -46,7 +46,7 @@ public class Startup {
 
         if (!driver.isAppInstalled("com.wdiodemoapp")) {
 //            driver.installApp(apkPath);
-            driver.installApp("bs://0b3702a6ab69ccd0f740dd899056284cf3a876f7");
+            driver.installApp("bs://0b3702a6ab69ccd0f740dd899056284cf3a876f7.app");
         }
         Thread.sleep(3000);
         return driver;

@@ -1,7 +1,7 @@
 userName: tiagoteixeira_Ec9LCM
 accessKey: J4sHow6b4zsrA1EWgopg
-framework: testng
-app: bs://sample.app
+framework: junit
+app: bs://0b3702a6ab69ccd0f740dd899056284cf3a876f7.app
 platforms:
   - platformName: android
     deviceName: Samsung Galaxy S22 Ultra
@@ -12,6 +12,6 @@ platforms:
   - platformName: android
     deviceName: OnePlus 9
     platformVersion: 11.0
-browserstackLocal: true
+browserstackLocal: false
 buildName: browserstack-build-1
-projectName: BrowserStack Sample
+projectName: app-demo-nativo-test
