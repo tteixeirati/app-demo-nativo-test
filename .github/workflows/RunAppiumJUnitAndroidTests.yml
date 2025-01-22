@@ -16,6 +16,11 @@ jobs:
     # 1. Checkout o código do repositório
     - name: Checkout code
       uses: actions/checkout@v3
+
+    - name: Set up environment variables
+      run: |
+        echo "BROWSERSTACK_USERNAME=${{ secrets.BROWSERSTACK_USERNAME }}" >> $GITHUB_ENV
+        echo "BROWSERSTACK_ACCESS_KEY=${{ secrets.BROWSERSTACK_ACCESS_KEY }}" >> $GITHUB_ENV
  
     # 2. Configurar o JDK (Java 21)
     - name: Set up JDK 21
@@ -38,11 +43,7 @@ jobs:
         # Set environment variables for Android SDK
         echo "ANDROID_SDK_ROOT=/usr/local/android-sdk" >> $GITHUB_ENV
         echo "PATH=$PATH:/usr/local/android-sdk/cmdline-tools/latest/bin:/usr/local/android-sdk/platform-tools:/usr/local/android-sdk/emulator" >> $GITHUB_ENV
-        
-    - name: Set up environment variables
-      run: |
-        echo "BROWSERSTACK_USERNAME=${{ secrets.BROWSERSTACK_USERNAME }}" >> $GITHUB_ENV
-        echo "BROWSERSTACK_ACCESS_KEY=${{ secrets.BROWSERSTACK_ACCESS_KEY }}" >> $GITHUB_ENV
+                
     - name: Install Android Emulator and System Image
       run: |
         # Install necessary components
