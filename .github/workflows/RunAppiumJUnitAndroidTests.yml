@@ -9,6 +9,7 @@ on:
       - main
 
 jobs:
+
   test:
     runs-on: ubuntu-latest
 
@@ -44,7 +45,8 @@ jobs:
         BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
         BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
       run: |
-        mvn test -Dappium.server.url=https://$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY@hub-cloud.browserstack.com/wd/hub \
+        name:RunAppiumtestsrun:mvncleantest
+                 -Dappium:server:url=${{secrets:APPIUM_URL}}:
                  -Dbrowserstack.device="Google Pixel 7" \
                  -Dbrowserstack.os_version="13.0" \
                  -Dbrowserstack.app_url="bs://0b3702a6ab69ccd0f740dd899056284cf3a876f7" # Replace <app_url> with the uploaded app URL
