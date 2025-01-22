@@ -31,15 +31,15 @@ jobs:
 
     - name: Set up Android SDK
       run: |
-        # Install required dependencies for Android SDK and Emulator
+        # Install dependencies for Android SDK tools
         sudo apt-get update
         sudo apt-get install -y wget unzip openjdk-8-jdk
- 
-        # Download and install Android SDK command-line tools
+
+        # Download and install Android SDK Command-Line Tools
         wget https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip
         unzip commandlinetools-linux-7302050_latest.zip
         sudo mv cmdline-tools /usr/local/android-sdk
- 
+
         # Set environment variables for Android SDK
         echo "ANDROID_SDK_ROOT=/usr/local/android-sdk" >> $GITHUB_ENV
         echo "PATH=$PATH:/usr/local/android-sdk/cmdline-tools/latest/bin:/usr/local/android-sdk/platform-tools:/usr/local/android-sdk/emulator" >> $GITHUB_ENV
