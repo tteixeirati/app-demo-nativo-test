@@ -47,4 +47,4 @@ jobs:
         mvn test -Dappium.server.url=https://$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY@hub-cloud.browserstack.com/wd/hub \
                  -Dbrowserstack.device="Google Pixel 7" \
                  -Dbrowserstack.os_version="13.0" \
-                 -Dbrowserstack.app_url="bs://<app_url>" # Replace <app_url> with the uploaded app URL
+                 -Dbrowserstack.app_url="bs://0b3702a6ab69ccd0f740dd899056284cf3a876f7" # Replace <app_url> with the uploaded app URL
