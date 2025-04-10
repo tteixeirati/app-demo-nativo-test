@@ -1,7 +1,7 @@
-import com.gft.qa.teixeira.Login;
-import com.gft.qa.teixeira.LoginPage;
-import com.gft.qa.teixeira.FormsPage;
-import com.gft.qa.teixeira.Startup;
+import com.qa.teixeira.Login;
+import com.qa.teixeira.LoginPage;
+import com.qa.teixeira.FormsPage;
+import com.qa.teixeira.Startup;
 import io.appium.java_client.android.AndroidDriver;
 import org.junit.After;
 import org.junit.Assert;

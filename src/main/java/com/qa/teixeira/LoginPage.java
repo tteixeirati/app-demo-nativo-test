@@ -1,4 +1,4 @@
-package com.gft.qa.teixeira;
+package com.qa.teixeira;
 
 import io.appium.java_client.android.AndroidDriver;
 import org.apache.commons.io.FileUtils;
@@ -18,6 +18,7 @@ public class LoginPage {
     }
 
     public void openLoginPage() throws Exception {
+        Thread.sleep(3000);
         driver.findElement(By.id("android:id/content")).click();
         Thread.sleep(1000);
         driver.findElement(By.xpath("//android.widget.TextView[@text='Login']")).click();
@@ -42,7 +43,8 @@ public class LoginPage {
         takeScreenShot("clickLoginbutton");
     }
 
-    public String getLoginResponse() throws IOException {
+    public String getLoginResponse() throws IOException, InterruptedException {
+        Thread.sleep(3000);
         String respostaLogin = driver.findElement(By.id("android:id/message")).getText();
         takeScreenShot("getLoginResponse");
         return respostaLogin;

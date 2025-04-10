@@ -1,4 +1,4 @@
-package com.gft.qa.teixeira;
+package com.qa.teixeira;
 
 import io.appium.java_client.android.AndroidDriver;
 import org.apache.commons.io.FileUtils;

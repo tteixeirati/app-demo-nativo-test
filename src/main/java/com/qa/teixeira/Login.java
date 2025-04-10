@@ -1,15 +1,6 @@
-package com.gft.qa.teixeira;
+package com.qa.teixeira;
 
 import io.appium.java_client.android.AndroidDriver;
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-
-import java.io.File;
-import java.io.IOException;
-
-import com.gft.qa.teixeira.LoginPage;
 
 public class Login {
 

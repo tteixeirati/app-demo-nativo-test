@@ -10,3 +10,5 @@ A classe AppTest pode ser executada/debugada teste por teste ou de uma única ve
 É necessário que o Appium e o emulador Android estejam rodando.
 
 É necessário que a URL do servidor Appium seja setada no arquivo de propriedades do app, na raiz do projeto.
+
+É necessário que o caminho do Android SDK esteja setado nas váriáveis de ambiente.

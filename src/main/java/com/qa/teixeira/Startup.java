@@ -1,4 +1,4 @@
-package com.gft.qa.teixeira;
+package com.qa.teixeira;
 
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
@@ -31,11 +31,11 @@ public class Startup {
 
         UiAutomator2Options options = new UiAutomator2Options();
         options.setDeviceName("emulator-5554");
-        options.setAppPackage("com.wdiodemoapp");
-        options.setAppActivity("com.wdiodemoapp/.MainActivity");
+//        options.setAppPackage("com.wdiodemoapp");
+//        options.setAppActivity("com.wdiodemoapp/.MainActivity");
         options.setAutomationName("UiAutomator2");
         options.setPlatformName("Android");
-        options.setPlatformVersion("15.0");
+        options.setPlatformVersion("16.0");
         options.setNewCommandTimeout(Duration.ofSeconds(60));
 
         AndroidDriver driver = new AndroidDriver(appiumServerUrl, options);
@@ -45,6 +45,10 @@ public class Startup {
             driver.installApp(apkPath);
         }
         Thread.sleep(3000);
+        options.setAppPackage("com.wdiodemoapp");
+        options.setAppActivity("com.wdiodemoapp/.MainActivity");
+        driver = new AndroidDriver(appiumServerUrl, options);
+
         return driver;
 
     }
